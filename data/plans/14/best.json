@@ -1,0 +1,72 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "ホテルオークラ京都岡崎別邸"
+    },
+    {
+      "slot": 2,
+      "mode": "taxi"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 4,
+      "mode": "taxi"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 6,
+      "mode": "city bus"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 8,
+      "mode": "walk"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "山元麵蔵"
+    },
+    {
+      "slot": 10,
+      "mode": "walk"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "ホテルオークラ京都岡崎別邸"
+    },
+    {
+      "slot": 12,
+      "mode": "walk"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "日向大神宮"
+    },
+    {
+      "slot": 14,
+      "mode": "walk"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "ロームシアター京都"
+    }
+  ]
+}

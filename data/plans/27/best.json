@@ -1,0 +1,73 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 2,
+      "mode": "walk"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "京都市京セラ美術館"
+    },
+    {
+      "slot": 4,
+      "mode": "walk"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 6,
+      "mode": "walk"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "京都国立近代美術館"
+    },
+    {
+      "slot": 8,
+      "mode": "walk"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 10,
+      "mode": "taxi"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    },
+    {
+      "slot": 12,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    },
+    {
+      "slot": 14,
+      "mode": "walk"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    }
+  ]
+}

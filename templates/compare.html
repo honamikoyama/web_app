@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>希望案 vs 生成解（モック比較UI）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{--gap:12px;--line:#e5e7eb;--muted:#6b7280;--radius:12px;--shadow:0 8px 20px rgba(0,0,0,.06)}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,"Noto Sans JP",sans-serif}
+    header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    header a{font-size:12px}
+    main{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);padding:16px}
+    .col{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:calc(100vh - 140px)}
+    .col>h2{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);font-size:16px}
+    .list{padding:12px;overflow:auto}
+    .row{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:10px}
+    .time{font-weight:700;font-variant-numeric:tabular-nums}
+    .poi{font-weight:600}
+    .sub{font-size:12px;color:var(--muted)}
+    .tags{display:flex;gap:8px;align-items:center;margin-top:2px}
+    .tag{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+    .icons{display:flex;gap:12px;align-items:center}
+    .icons img{height:28px}
+    .legend{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:8px 12px;border-top:1px solid var(--line)}
+    .legend .item{display:flex;gap:8px;align-items:center}
+    @media(max-width:960px){main{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="margin:0;font-size:18px;">希望案 vs 生成解（モック比較UI）</h1>
+    <div class="sub" style="font-size:12px;color:#6b7280">/data/mock_compare.json を表示します</div>
+    <a href="/" style="margin-left:auto">← 地図UIへ戻る</a>
+  </header>
+
+  <main>
+    <section class="col">
+      <h2>希望案</h2>
+      <div id="list-desired" class="list"></div>
+      <div class="legend">
+        <div class="item"><img src="/static/img/congestion/low.png"  alt=""> <span class="sub">混雑：低</span></div>
+        <div class="item"><img src="/static/img/congestion/mid.png"  alt=""> <span class="sub">混雑：中</span></div>
+        <div class="item"><img src="/static/img/congestion/high.png" alt=""> <span class="sub">混雑：高</span></div>
+        <div class="item"><img src="/static/img/satisfaction/good.png" alt=""> <span class="sub">満足：高</span></div>
+        <div class="item"><img src="/static/img/satisfaction/soso.png" alt=""> <span class="sub">満足：中</span></div>
+        <div class="item"><img src="/static/img/satisfaction/bad.png"  alt=""> <span class="sub">満足：低</span></div>
+      </div>
+    </section>
+
+    <section class="col">
+      <h2>生成解（提案）</h2>
+      <div id="list-proposal" class="list"></div>
+      <div class="legend">
+        <div class="item"><img src="/static/img/congestion/low.png"  alt=""> <span class="sub">混雑：低</span></div>
+        <div class="item"><img src="/static/img/congestion/mid.png"  alt=""> <span class="sub">混雑：中</span></div>
+        <div class="item"><img src="/static/img/congestion/high.png" alt=""> <span class="sub">混雑：高</span></div>
+        <div class="item"><img src="/static/img/satisfaction/good.png" alt=""> <span class="sub">満足：高</span></div>
+        <div class="item"><img src="/static/img/satisfaction/soso.png" alt=""> <span class="sub">満足：中</span></div>
+        <div class="item"><img src="/static/img/satisfaction/bad.png"  alt=""> <span class="sub">満足：低</span></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function row(item){
+      const el = document.createElement('div');
+      el.className = 'row';
+      el.innerHTML = `
+        <div class="time">${item.time ?? ""}</div>
+        <div>
+          <div class="poi">${item.poi_name ?? "—"}</div>
+          <div class="tags">
+            <span class="tag">${item.mode ?? "-"}</span>
+            <span class="tag sub">${item.category ?? "-"}</span>
+          </div>
+        </div>
+        <div class="icons">
+          <img src="${item.congestion_img}" title="混雑">
+          <img src="${item.satisfaction_img}" title="満足">
+        </div>
+      `;
+      return el;
+    }
+    async function load(){
+      const res = await fetch('/api/compare');
+      const data = await res.json();
+      const L = document.getElementById('list-desired');
+      const R = document.getElementById('list-proposal');
+      L.innerHTML = ''; R.innerHTML = '';
+      (data.desired  || []).forEach(x => L.appendChild(row(x)));
+      (data.proposal || []).forEach(x => R.appendChild(row(x)));
+    }
+    load();
+  </script>
+</body>
+</html>
+

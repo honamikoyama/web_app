@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "南禅寺"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "南禅寺"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "南禅寺"
+    },
+    {
+      "slot": 4,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "京都市京セラ美術館"
+    },
+    {
+      "slot": 6,
+      "mode": "walk"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "日向大神宮"
+    },
+    {
+      "slot": 8,
+      "mode": "walk"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 10,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 12,
+      "mode": "taxi"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 14,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    }
+  ]
+}

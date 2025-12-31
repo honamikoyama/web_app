@@ -1,0 +1,72 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "walk"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 4,
+      "mode": "taxi"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 6,
+      "mode": "walk"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 8,
+      "mode": "walk"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 10,
+      "mode": "walk"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "南禅寺"
+    },
+    {
+      "slot": 12,
+      "mode": "taxi"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "京つけもの大安本店"
+    },
+    {
+      "slot": 14,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    }
+  ]
+}

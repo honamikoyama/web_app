@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 4,
+      "mode": "taxi"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 6,
+      "mode": "taxi"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "日図デザイン博物館"
+    },
+    {
+      "slot": 8,
+      "mode": "walk"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 10,
+      "mode": "taxi"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "日向大神宮"
+    },
+    {
+      "slot": 12,
+      "mode": "walk"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 14,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    }
+  ]
+}

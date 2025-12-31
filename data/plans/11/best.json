@@ -1,0 +1,73 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "walk"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 4,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 5,
+      "mode": "walk"
+    },
+    {
+      "slot": 6,
+      "mode": "stay",
+      "poi_name": "日向大神宮"
+    },
+    {
+      "slot": 7,
+      "mode": "walk"
+    },
+    {
+      "slot": 8,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 9,
+      "mode": "walk"
+    },
+    {
+      "slot": 10,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 12,
+      "mode": "walk"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "日図デザイン博物館"
+    },
+    {
+      "slot": 14,
+      "mode": "taxi"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    }
+  ]
+}

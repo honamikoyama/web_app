@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 2,
+      "mode": "walk"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "京都市京セラ美術館"
+    },
+    {
+      "slot": 4,
+      "mode": "stay",
+      "poi_name": "京都市京セラ美術館"
+    },
+    {
+      "slot": 5,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 6,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 8,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 10,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 11,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 12,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 14,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 15,
+      "mode": "walk"
+    }
+  ]
+}

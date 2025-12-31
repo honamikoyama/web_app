@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 4,
+      "mode": "taxi"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "京都伝統産業ミュージアム"
+    },
+    {
+      "slot": 6,
+      "mode": "walk"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "やきとり大吉東山三条店"
+    },
+    {
+      "slot": 8,
+      "mode": "taxi"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "京都市動物園"
+    },
+    {
+      "slot": 10,
+      "mode": "stay",
+      "poi_name": "京都市動物園"
+    },
+    {
+      "slot": 11,
+      "mode": "walk"
+    },
+    {
+      "slot": 12,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 14,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 15,
+      "mode": "taxi"
+    }
+  ]
+}

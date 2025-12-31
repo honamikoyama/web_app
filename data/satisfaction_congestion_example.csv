@@ -1,0 +1,7 @@
+user_id,route_type,total_satisfaction,total_congestion,avg_satisfaction,avg_congestion,num_slots
+User_1,desired,59.81,645,4.6,49.62,13
+User_1,optimized,92.67,645,7.13,49.62,13
+User_2,desired,59.81,645,4.6,49.62,13
+User_2,optimized,76.88,645,5.91,49.62,13
+User_3,desired,59.81,645,4.6,49.62,13
+User_3,optimized,62.06,645,4.77,49.62,13

@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "walk"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 4,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 5,
+      "mode": "walk"
+    },
+    {
+      "slot": 6,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 8,
+      "mode": "walk"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 10,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "京都岡崎蔦屋書店"
+    },
+    {
+      "slot": 12,
+      "mode": "walk"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 14,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 15,
+      "mode": "walk"
+    }
+  ]
+}

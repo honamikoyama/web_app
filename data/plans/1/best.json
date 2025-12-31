@@ -1,0 +1,73 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 2,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 4,
+      "mode": "walk"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 6,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 7,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 8,
+      "mode": "stay",
+      "poi_name": "京つけもの大安本店"
+    },
+    {
+      "slot": 9,
+      "mode": "walk"
+    },
+    {
+      "slot": 10,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 12,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 13,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 14,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 15,
+      "mode": "taxi"
+    }
+  ]
+}

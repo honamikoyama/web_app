@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>観光ナビ試作</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <style>
+    body { margin:0; font-family: system-ui, "Noto Sans JP", sans-serif; }
+    .topbar { padding:8px 12px; border-bottom:1px solid #ddd; display:flex; align-items:center; gap:8px; }
+    .wrap { display:flex; height:calc(100vh - 49px); }
+    #map { flex:1; position:relative; }
+    #side { width: 360px; border-left:1px solid #ddd; padding:12px; overflow:auto; }
+    h3 { margin:6px 0 10px; font-size:16px; }
+    .item { padding:6px 4px; border-bottom:1px solid #eee; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
+    select, button { padding:6px 10px; }
+    .legend-block { margin-top:12px; font-size:12px; border-top:1px solid #eee; padding-top:8px; }
+    .legend-row { display:flex; align-items:center; gap:8px; margin:4px 0; }
+    .lg-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .lg-line { width:56px; height:0; border-top:4px solid #3388ff; }
+    .lg-dash { width:56px; height:0; border-top:4px dashed #3388ff; }
+    .lg-bus  { width:56px; height:0; border-top:4px dashed #7a7a7a; }
+    .lg-car  { width:56px; height:0; border-top:4px dashed #000; }
+    /* 下部シート */
+    .sheet { position:fixed; left:12px; bottom:12px; width:360px; max-width:90vw; background:#fff; border:1px solid #ddd; border-radius:12px; box-shadow:0 10px 28px rgba(0,0,0,.2); display:none; }
+    .sheet header { padding:10px 12px; font-weight:600; border-bottom:1px solid #eee; }
+    .sheet .content { padding:10px 12px; font-size:14px; }
+    .sheet .actions { padding:10px 12px; text-align:right; }
+    .btn { padding:6px 10px; border:1px solid #333; border-radius:8px; cursor:pointer; background:#fff; }
+  </style>
+</head>
+<body>
+  <!-- ユーザー選択（1〜30） -->
+  <div class="topbar">
+    <label>ユーザーID:
+      <select id="userSel"></select>
+    </label>
+    <button id="loadBtn">表示</button>
+    <div style="margin-left:auto; font-size:12px; opacity:.8;">© OpenStreetMap contributors</div>
+  </div>
+
+  <div class="wrap">
+    <div id="map"></div>
+
+    <aside id="side">
+      <h3>行程タイムライン（1時間刻み）</h3>
+      <div id="timeline"></div>
+
+      <!-- ▼ 交通手段の凡例（タイムライン下に表示） -->
+      <div class="legend-block">
+        <div style="font-weight:600; margin-bottom:4px;">交通手段の表記</div>
+        <div class="legend-row"><span class="lg-line"></span><span>徒歩</span></div>
+        <div class="legend-row"><span class="lg-dash"></span><span>自転車</span></div>
+        <div class="legend-row"><span class="lg-bus"></span><span>バス</span></div>
+        <div class="legend-row"><span class="lg-car"></span><span>タクシー/車</span></div>
+      </div>
+
+      <!-- ▼ カテゴリ凡例（ピン色の意味） -->
+      <div class="legend-block" id="catLegend">
+        <div style="font-weight:600; margin-bottom:4px;">カテゴリの色</div>
+        <!-- JSで自動生成 -->
+      </div>
+    </aside>
+  </div>
+
+  <!-- POI詳細の下部シート -->
+  <div id="sheet" class="sheet">
+    <header id="sheetTitle">POI</header>
+    <div class="content" id="sheetBody">詳細情報</div>
+    <div class="actions">
+      <button id="sheetClose" class="btn">閉じる</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // ---- 初期化 ----
+    const pois = {{ pois|tojson }};
+
+    // カテゴリ→色（必要ならお好みで調整）
+    const CAT_COLORS = {
+      "歴史神社仏閣": "#d64545",
+      "文化・美術":   "#5b8def",
+      "自然・公園":   "#2aa876",
+      "グルメ":       "#e39d3b",
+      "体験施設":     "#8e59d7",
+      "買い物・ショッピング": "#e36ab3",
+      "宿泊":         "#656d78",
+      "その他":       "#666666"
+    };
+
+    // ユーザー選択 1..30
+    const userSel = document.getElementById('userSel');
+    for(let i=1;i<=30;i++){ const o=document.createElement('option'); o.value=String(i); o.textContent=String(i); userSel.appendChild(o); }
+    userSel.value = "1";
+
+    // 地図
+    const map = L.map('map').setView([35.0153, 135.7830], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
+
+    // 名前→{coord, category}
+    const poiIndex = new Map();
+    pois.forEach(p => poiIndex.set(p.name, {coord:[p.lat,p.lng], cat:(p.category||"その他")}));
+
+    // カテゴリ凡例を生成（使われているカテゴリだけ表示）
+    (function buildCatLegend(){
+      const used = new Map();
+      pois.forEach(p => used.set(p.category || "その他", true));
+      const wrap = document.getElementById('catLegend');
+      Array.from(used.keys()).forEach(cat=>{
+        const color = CAT_COLORS[cat] || CAT_COLORS["その他"];
+        const row = document.createElement('div');
+        row.className = "legend-row";
+        row.innerHTML = `<span class="lg-dot" style="background:${color}"></span><span>${cat}</span>`;
+        wrap.appendChild(row);
+      });
+    })();
+
+    // レイヤ管理 & 参照
+    let layerGroup = L.layerGroup().addTo(map);
+    function clearLayers(){ layerGroup.remove(); layerGroup = L.layerGroup().addTo(map); }
+    const markerByName = new Map();
+
+    // 線スタイル
+    function styleFor(mode){
+      if(mode === 'walk' || mode === 'walking') return { weight: 4, color:'#3388ff' };
+      if(mode === 'bicycle' || mode === 'bike' || mode === 'cycling') return { weight: 4, color:'#3388ff', dashArray:'6,6' };
+      if(mode === 'bus'  || mode === 'transit')  return { weight: 4, color:'#7a7a7a', dashArray:'6,6' };
+      if(mode === 'car'  || mode === 'driving' || mode === 'taxi')  return { weight: 4, color:'#000', dashArray:'12,6' };
+      return { weight: 4, color:'#3388ff' };
+    }
+    function slotToTime(slot){ const h = 6 + (slot-1); return String(h).padStart(2,'0') + ':00'; }
+    function modeLabel(m){ return ({walk:'徒歩', bicycle:'自転車', bus:'バス', car:'車', taxi:'タクシー'})[m] || m; }
+
+    // タイムライン
+    function renderTimeline(plan){
+      const el = document.getElementById('timeline');
+      el.innerHTML = '';
+      (plan.items || []).forEach((it) => {
+        const t = slotToTime(it.slot);
+        const text = (it.mode === 'stay') ? `${t} — ${it.poi_name || '（未指定）'}` : `${t} — ${modeLabel(it.mode)}`;
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.textContent = text;
+        div.onclick = () => {
+          if(it.mode === 'stay' && it.poi_name && poiIndex.has(it.poi_name)){
+            const {coord} = poiIndex.get(it.poi_name);
+            map.setView(coord, 17);
+            const m = markerByName.get(it.poi_name);
+            if(m) m.openPopup();
+            openSheet(it.poi_name);
+          }
+        }
+        el.appendChild(div);
+      });
+    }
+
+    // 地図描画（カテゴリ色のピン、移動線）
+    function renderMap(plan){
+      clearLayers(); markerByName.clear();
+      const items = plan.items || [];
+      const bounds = [];
+
+      // 滞在ピン（カテゴリで色分け）
+      items.forEach(it=>{
+        if(it.mode==='stay' && it.poi_name && poiIndex.has(it.poi_name)){
+          const {coord, cat} = poiIndex.get(it.poi_name);
+          bounds.push(coord);
+          const color = CAT_COLORS[cat] || CAT_COLORS["その他"];
+          const mk = L.circleMarker(coord, {radius: 8, color, fillColor: color, fillOpacity: 0.9})
+                        .addTo(layerGroup)
+                        .bindPopup(`<b>${it.poi_name}</b><br><small>${cat||'—'}</small>`);
+          mk.on('click', ()=>openSheet(it.poi_name, cat));
+          markerByName.set(it.poi_name, mk);
+        }
+      });
+
+      // 移動線（直前滞在→次滞在）
+      for(let i=0;i<items.length;i++){
+        const it = items[i];
+        if(it.mode==='stay') continue;
+        let prev=null, next=null;
+        for(let j=i-1;j>=0;j--) if(items[j].mode==='stay' && items[j].poi_name){ prev=items[j].poi_name; break; }
+        for(let k=i+1;k<items.length;k++) if(items[k].mode==='stay' && items[k].poi_name){ next=items[k].poi_name; break; }
+        if(!prev||!next) continue;
+        if(!poiIndex.has(prev)||!poiIndex.has(next)) continue;
+        const a = poiIndex.get(prev).coord, b = poiIndex.get(next).coord;
+        L.polyline([a,b], styleFor(it.mode)).addTo(layerGroup);
+      }
+
+      if(bounds.length>0) map.fitBounds(bounds, { padding:[20,20] });
+    }
+
+    // POI詳細（下部シート）
+    const sheet = document.getElementById('sheet');
+    const sheetTitle = document.getElementById('sheetTitle');
+    const sheetBody = document.getElementById('sheetBody');
+    document.getElementById('sheetClose').onclick = ()=> sheet.style.display='none';
+    function openSheet(name, cat){
+      sheetTitle.textContent = name || 'POI';
+      const category = cat || poiIndex.get(name)?.cat || '—';
+      sheetBody.innerHTML = `
+        <div>カテゴリ：${category}</div>
+        <div>営業時間：—</div>
+        <div style="margin-top:6px;color:#666;">※営業時間などはpoi_list.csvの列と連携可</div>
+      `;
+      sheet.style.display = 'block';
+    }
+
+    // 取得＆描画
+    async function loadPlan(){
+      const uid = userSel.value;
+      const res = await fetch(`/api/plan?user=${uid}`);
+      const plan = await res.json();
+      if(plan.error){ alert(plan.error); return; }
+      renderTimeline(plan);
+      renderMap(plan);
+    }
+    document.getElementById('loadBtn').onclick = loadPlan;
+
+    // 初期表示
+    loadPlan();
+  </script>
+</body>
+</html>

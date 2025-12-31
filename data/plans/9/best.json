@@ -1,0 +1,73 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 2,
+      "mode": "walk"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "やきとり大吉東山三条店"
+    },
+    {
+      "slot": 4,
+      "mode": "walk"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    },
+    {
+      "slot": 6,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    },
+    {
+      "slot": 7,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 8,
+      "mode": "stay",
+      "poi_name": "京つけもの大安本店"
+    },
+    {
+      "slot": 9,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 10,
+      "mode": "stay",
+      "poi_name": "日向大神宮"
+    },
+    {
+      "slot": 11,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 12,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 14,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 15,
+      "mode": "taxi"
+    }
+  ]
+}

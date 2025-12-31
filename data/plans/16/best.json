@@ -1,0 +1,73 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "ロームシアター京都"
+    },
+    {
+      "slot": 2,
+      "mode": "walk"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "ホテルオークラ京都岡崎別邸"
+    },
+    {
+      "slot": 4,
+      "mode": "walk"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "京都国立近代美術館"
+    },
+    {
+      "slot": 6,
+      "mode": "stay",
+      "poi_name": "京都国立近代美術館"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "京都国立近代美術館"
+    },
+    {
+      "slot": 8,
+      "mode": "taxi"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "日図デザイン博物館"
+    },
+    {
+      "slot": 10,
+      "mode": "taxi"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "山元麵蔵"
+    },
+    {
+      "slot": 12,
+      "mode": "city bus"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "京生麩のお店愛麩"
+    },
+    {
+      "slot": 14,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "京都国立近代美術館"
+    },
+    {
+      "slot": 2,
+      "mode": "taxi"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "蹴上インクライン"
+    },
+    {
+      "slot": 4,
+      "mode": "walk"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    },
+    {
+      "slot": 6,
+      "mode": "walk"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "ホテルオークラ京都岡崎別邸"
+    },
+    {
+      "slot": 8,
+      "mode": "walk"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 10,
+      "mode": "walk"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "やきとり大吉東山三条店"
+    },
+    {
+      "slot": 12,
+      "mode": "walk"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "京都市京セラ美術館"
+    },
+    {
+      "slot": 14,
+      "mode": "taxi"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "ロームシアター京都"
+    }
+  ]
+}

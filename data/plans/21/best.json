@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "日向大神宮"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "日向大神宮"
+    },
+    {
+      "slot": 3,
+      "mode": "walk"
+    },
+    {
+      "slot": 4,
+      "mode": "stay",
+      "poi_name": "ロームシアター京都"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "ロームシアター京都"
+    },
+    {
+      "slot": 6,
+      "mode": "stay",
+      "poi_name": "ロームシアター京都"
+    },
+    {
+      "slot": 7,
+      "mode": "taxi"
+    },
+    {
+      "slot": 8,
+      "mode": "stay",
+      "poi_name": "南禅寺"
+    },
+    {
+      "slot": 9,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 10,
+      "mode": "stay",
+      "poi_name": "京都伝統産業ミュージアム"
+    },
+    {
+      "slot": 11,
+      "mode": "walk"
+    },
+    {
+      "slot": 12,
+      "mode": "stay",
+      "poi_name": "平安神宮"
+    },
+    {
+      "slot": 13,
+      "mode": "walk"
+    },
+    {
+      "slot": 14,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    }
+  ]
+}

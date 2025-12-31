@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 4,
+      "mode": "walk"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 6,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 8,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 10,
+      "mode": "walk"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "ホテルオークラ京都岡崎別邸"
+    },
+    {
+      "slot": 12,
+      "mode": "walk"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 14,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "ホテルオークラ京都岡崎別邸"
+    }
+  ]
+}

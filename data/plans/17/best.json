@@ -1,0 +1,72 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "ロームシアター京都"
+    },
+    {
+      "slot": 2,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "山元麵蔵"
+    },
+    {
+      "slot": 4,
+      "mode": "walk"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "やきとり大吉東山三条店"
+    },
+    {
+      "slot": 6,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "京都国立近代美術館"
+    },
+    {
+      "slot": 8,
+      "mode": "taxi"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 10,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "京都ハンディクラフトセンター"
+    },
+    {
+      "slot": 12,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "神宮道商店街"
+    },
+    {
+      "slot": 14,
+      "mode": "walk"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "南禅寺"
+    }
+  ]
+}

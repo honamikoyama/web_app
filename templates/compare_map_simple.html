@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>希望ルート vs 提案ルート（シンプル版）</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <style>
+    :root{
+      --line:#e5e7eb; --muted:#6b7280;
+      --foot:#2563eb; --bike:#059669; --car:#f59e0b; --bus:#8b5cf6; --taxi:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,"Noto Sans JP",sans-serif;background:#fafafa;color:#111}
+    header{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;background:#fff}
+    header a{margin-left:auto;font-size:12px}
+    main{
+      display:grid; 
+      grid-template-columns:1fr 1fr; 
+      gap:16px; 
+      padding:16px;
+      height:calc(100vh - 62px);
+    }
+    .col{display:grid; grid-template-rows:auto 1fr; gap:10px; min-height:0}
+    .title{margin:0; font-size:16px; font-weight:700; text-align:center}
+    .split{
+      display:grid; 
+      grid-template-columns:5fr 4fr; 
+      gap:14px; 
+      min-height:0;
+    }
+    .map{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff}
+    #mapL,#mapR{width:100%; height:100%}
+    .timeline{
+      border:1px solid var(--line); border-radius:12px; overflow:auto; background:#fff;
+      padding:10px;
+    }
+    .item{
+      display:grid; 
+      grid-template-columns:20px 45px 1fr; 
+      gap:8px; 
+      align-items:center;
+      padding:8px; 
+      border-radius:8px; 
+      margin-bottom:8px;
+      background:#fff; 
+      border:1px solid var(--line);
+    }
+    .item .num{
+      font-size:14px; 
+      font-weight:700; 
+      color:#2563eb;
+      text-align:center;
+    }
+    .item .time-cell{
+      font-variant-numeric:tabular-nums; 
+      font-weight:700; 
+      font-size:13px;
+      padding:6px;
+      border-radius:6px;
+      text-align:center;
+      background:#f9fafb;
+      line-height:1.2;
+      white-space:pre;
+    }
+    .item .poi-cell{
+      font-weight:600; 
+      font-size:13px;
+      line-height:1.3;
+      overflow:hidden;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      word-break:break-word;
+    }
+    @media(max-width:1200px){
+      main{grid-template-columns:1fr;}
+      .split{grid-template-columns:5fr 4fr;}
+    }
+    @media(max-width:900px){
+      .split{grid-template-columns:1fr;}
+    }
+    .cat-歴史神社仏閣{--cat:#8b5cf6}
+    .cat-文化・美術{--cat:#06b6d4}
+    .cat-自然・公園{--cat:#10b981}
+    .cat-グルメ{--cat:#ef4444}
+    .cat-買い物・ショッピング{--cat:#f97316}
+    .cat-体験施設{--cat:#84cc16}
+    .cat-宿泊{--cat:#64748b}
+    .user-selector{
+      padding:8px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:6px;
+      font-size:14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>希望ルート vs 提案ルート（シンプル版）</strong>
+    <select id="userSelector" class="user-selector">
+      <option value="User_1">User 1（大幅変更）</option>
+      <option value="User_2">User 2（中程度変更）</option>
+      <option value="User_3">User 3（小変更）</option>
+    </select>
+    <span style="font-size:12px;color:#6b7280" id="userTypeDisplay"></span>
+    <a href="/ui/compare-map">← 詳細版へ</a>
+  </header>
+
+  <main>
+    <section class="col">
+      <h2 class="title">希望ルート</h2>
+      <div class="split">
+        <div class="map"><div id="mapL"></div></div>
+        <div class="timeline" id="tlL"></div>
+      </div>
+    </section>
+
+    <section class="col">
+      <h2 class="title">提案ルート</h2>
+      <div class="split">
+        <div class="map"><div id="mapR"></div></div>
+        <div class="timeline" id="tlR"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    function modeToStyle(m){
+      const $ = s=>getComputedStyle(document.body).getPropertyValue(s).trim();
+      m=String(m||"").toLowerCase();
+      if(m.includes("walk")||m.includes("徒歩")) return {profile:"foot", color:$('--foot')};
+      if(m.includes("bike")||m.includes("自転車")||m.includes("レンタ")) return {profile:"bike", color:$('--bike')};
+      if(m.includes("bus")||m.includes("バス")) return {profile:"car", color:$('--bus')};
+      if(m.includes("taxi")||m.includes("タク")) return {profile:"car", color:$('--taxi')};
+      if(m.includes("car")||m.includes("車")) return {profile:"car", color:$('--car')};
+      if(m.includes("stay")) return {profile:null, color:$('--stay')};
+      return {profile:"foot", color:$('--foot')};
+    }
+
+    function makeMap(id){
+      const map=L.map(id).setView([35.0153,135.7830],14);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+      setTimeout(() => map.invalidateSize(), 100);
+      return map;
+    }
+
+    async function routeLine(profile, a, b){
+      if(!profile){ return [[a.lat,a.lng],[b.lat,b.lng]]; }
+      try{
+        const url=`https://router.project-osrm.org/route/v1/${profile}/${a.lng},${a.lat};${b.lng},${b.lat}?overview=full&geometries=geojson`;
+        const r=await fetch(url); if(!r.ok) throw new Error();
+        const j=await r.json();
+        return j.routes[0].geometry.coordinates.map(([lon,lat])=>[lat,lon]);
+      }catch(e){
+        return [[a.lat,a.lng],[b.lat,b.lng]];
+      }
+    }
+
+    function categoryColor(cat){
+      const cls = {
+        "歴史神社仏閣":"#8b5cf6","文化・美術":"#06b6d4","自然・公園":"#10b981",
+        "グルメ":"#ef4444","買い物・ショッピング":"#f97316","体験施設":"#84cc16","宿泊":"#64748b"
+      };
+      return cls[cat] || "#3b82f6";
+    }
+
+    function row(item, spotNumber = null){
+      const el = document.createElement('div');
+      el.className = 'item';
+
+      // start/returnの場合
+      if(item.slot === 'start' || item.slot === 'return'){
+        const timeCell = `<div class="time-cell">${item.time_display}</div>`;
+        const poiCell = `<div class="poi-cell">${item.poi_name}</div>`;
+        el.innerHTML = '<div class="num"></div>' + timeCell + poiCell;
+        return el;
+      }
+
+      const title = item.mode_jp || item.poi_name || "-";
+      const numCell = spotNumber ? `<div class="num">${spotNumber}</div>` : '<div class="num"></div>';
+      const timeCell = `<div class="time-cell">${item.time_display || ''}</div>`;
+      const poiCell = `<div class="poi-cell">${title}</div>`;
+
+      el.innerHTML = numCell + timeCell + poiCell;
+      return el;
+    }
+
+    async function drawPlan(map, listEl, plan){
+      const bounds=[];
+      listEl.innerHTML='';
+      
+      // スポット番号を付与
+      let spotNum = 0;
+      let lastPoiName = null;
+      const spotNumbers = new Map();
+      
+      plan.forEach(p => {
+        if(p.slot === 'start' || p.slot === 'return') return;
+        const isSpot = p.lat && p.lng && p.poi_name && !String(p.poi_name).toLowerCase().includes('move');
+        if (isSpot) {
+          if (p.poi_name !== lastPoiName) {
+            spotNum++;
+            lastPoiName = p.poi_name;
+          }
+          spotNumbers.set(p.slot, spotNum);
+        }
+      });
+      
+      // タイムライン表示
+      plan.forEach(p => {
+        const num = spotNumbers.get(p.slot);
+        listEl.appendChild(row(p, num));
+      });
+
+      // ピンを表示
+      const addedMarkers = new Map();
+      plan.forEach(p=>{
+        if(!p.lat||!p.lng) return;
+        if(p.slot === 'start' || p.slot === 'return') return;
+        if (addedMarkers.has(p.poi_name)) return;
+        
+        const num = spotNumbers.get(p.slot);
+        
+        const markerHtml = `
+          <div style="
+            background:${categoryColor(p.category)}; 
+            color:white; 
+            width:32px; 
+            height:32px; 
+            border-radius:50%; 
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            font-weight:800; 
+            font-size:14px;
+            border:3px solid white;
+            box-shadow:0 2px 4px rgba(0,0,0,0.3);
+          ">${num || ''}</div>
+        `;
+        
+        const icon = L.divIcon({
+          html: markerHtml,
+          className: 'custom-marker',
+          iconSize: [32, 32],
+          iconAnchor: [16, 16]
+        });
+        
+        L.marker([p.lat,p.lng], {icon: icon})
+          .addTo(map)
+          .bindPopup(
+            `<b>${num ? `${num} ` : ''}${p.poi_name||""}</b><br><small>${p.category||""}</small>`
+          );
+        bounds.push([p.lat,p.lng]);
+        addedMarkers.set(p.poi_name, true);
+      });
+
+      // ルート描画
+      let lastPOI=null, carryMode=null;
+      for(const cur of plan){
+        if(cur.slot === 'start' || cur.slot === 'return') continue;
+        const hasCoord=!!(cur.lat&&cur.lng);
+        if(!hasCoord){ if(cur.mode) carryMode=cur.mode; continue; }
+        if(!lastPOI){ lastPOI=cur; carryMode=cur.mode||carryMode; continue; }
+
+        const mode = (carryMode || cur.mode || lastPOI.mode || "walk");
+        const st   = modeToStyle(mode);
+        const line = await routeLine(st.profile, lastPOI, cur);
+        L.polyline(line, {
+          color: st.color, weight: 4, opacity: 0.98,
+          dashArray: (line.length===2 && st.profile) ? "6,6" : null
+        }).addTo(map);
+
+        lastPOI=cur; carryMode=null;
+      }
+      if(bounds.length) map.fitBounds(bounds,{padding:[18,18]});
+    }
+
+    async function init(){
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedUser = urlParams.get('user') || 'User_1';
+      document.getElementById('userSelector').value = selectedUser;
+      
+      const res = await fetch(`/api/compare_geo?user=${selectedUser}`);
+      const data = await res.json();
+      
+      document.getElementById('userTypeDisplay').textContent = `(${data.user_type})`;
+      
+      const mapL=makeMap('mapL');
+      const mapR=makeMap('mapR');
+      await drawPlan(mapL, document.getElementById('tlL'), data.desired);
+      await drawPlan(mapR, document.getElementById('tlR'), data.proposal);
+    }
+
+    document.getElementById('userSelector').addEventListener('change', function(){
+      const user = this.value;
+      window.location.href = `?user=${user}`;
+    });
+
+    init();
+  </script>
+</body>
+</html>

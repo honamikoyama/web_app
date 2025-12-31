@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "slot": 1,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 2,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 3,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    },
+    {
+      "slot": 4,
+      "mode": "walk"
+    },
+    {
+      "slot": 5,
+      "mode": "stay",
+      "poi_name": "岡崎公園"
+    },
+    {
+      "slot": 6,
+      "mode": "walk"
+    },
+    {
+      "slot": 7,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 8,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 9,
+      "mode": "stay",
+      "poi_name": "琵琶湖疎水"
+    },
+    {
+      "slot": 10,
+      "mode": "walk"
+    },
+    {
+      "slot": 11,
+      "mode": "stay",
+      "poi_name": "京生麩のお店愛麩"
+    },
+    {
+      "slot": 12,
+      "mode": "walk"
+    },
+    {
+      "slot": 13,
+      "mode": "stay",
+      "poi_name": "京都市動物園"
+    },
+    {
+      "slot": 14,
+      "mode": "bicycle"
+    },
+    {
+      "slot": 15,
+      "mode": "stay",
+      "poi_name": "The Hotel Higashiyama kyoto tokyu"
+    }
+  ]
+}
