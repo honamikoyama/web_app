@@ -19,6 +19,7 @@ USER_TYPE_CSV = BASE_P / "user_type.csv"
 POI_PREF_CSV = BASE_P / "poi_preference_by_type.csv"
 TRANSPORT_PREF_CSV = BASE_P / "transport_preference_by_type.csv"
 PERSUASIVE_TEXT_JSON = BASE_P / "persuasive_text.json"
+PERSUASIVE_TEXT_EN_JSON = BASE_P / "persuasive_text_en.json" 
 
 
 # ---------- ユーティリティ ----------
@@ -114,6 +115,7 @@ def load_persuasive_texts():
 def index():
     pois = load_poi_data()
     return render_template("index.html", pois=pois)
+
 
 @app.route("/api/plan")
 def api_plan():
@@ -229,6 +231,10 @@ def ui_compare_map():
 @app.route("/ui/compare-map-simple")
 def ui_compare_map_simple():
     return render_template("compare_map_simple.html")
+
+@app.route("/ui/compare-map-en")
+def ui_compare_map_en():
+    return render_template("compare_map_en.html")
 
 @app.route("/api/compare_geo")
 def api_compare_geo():
@@ -414,7 +420,192 @@ def api_compare_geo():
         "persuasive_text": persuasive_text
     })
 
+@app.route("/api/compare_geo_en")
+def api_compare_geo_en():
+    # ユーザー指定（デフォルト: User_1）
+    user = request.args.get("user", "User_1").strip()
+    
+    if not (POI_CSV.exists() and DESIRED_CSV.exists() and PROPOSAL_CSV.exists()):
+        return jsonify({"error": "CSV files not found"}), 404
 
+    # データ読み込み
+    poi_master, name_map = _load_poi_master_for_geo()
+    user_types = load_user_types()
+    poi_prefs = load_poi_preferences()
+    transport_prefs = load_transport_preferences()
+    
+    # 英語版説得文取得
+    persuasive_texts = {}
+    if PERSUASIVE_TEXT_EN_JSON.exists():
+        try:
+            with open(PERSUASIVE_TEXT_EN_JSON, 'r', encoding='utf-8') as f:
+                persuasive_texts = json.load(f)
+        except:
+            pass
+    
+    # ユーザータイプ取得
+    user_type = user_types.get(user, "Type A")
+    
+    # 説得文取得
+    persuasive_text = persuasive_texts.get(user, "")
+    
+    # プラン読み込み
+    desired  = _read_plan_csv(DESIRED_CSV, poi_master, name_map, user)
+    proposal = _read_plan_csv(PROPOSAL_CSV, poi_master, name_map, user)
+
+    # --- 混雑度・満足度計算 ---
+    def _congestion_base(slot: str) -> int:
+        """時間帯ベースの混雑度"""
+        if slot == "start" or slot == "return":
+            return 0
+        match = re.search(r"\d+", slot)
+        if not match:
+            return 25
+        slot_num = int(match.group())
+        hour = 8 + slot_num
+        
+        if 10 <= hour <= 15:
+            return 65
+        if 8 <= hour < 10 or 15 < hour <= 18:
+            return 45
+        return 25
+
+    def _icon_sat_from_10(score: float) -> int:
+        """10点満点 → 5段階"""
+        if score >= 8: return 5
+        if score >= 6: return 4
+        if score >= 4: return 3
+        if score >= 2: return 2
+        return 1
+
+    def _icon_cong(cong: int) -> str:
+        """混雑度 → アイコン"""
+        if cong < 20: return "/static/img/congestion/空いている.png"
+        if cong < 40: return "/static/img/congestion/やや空いている.png"
+        if cong < 60: return "/static/img/congestion/普通.png"
+        if cong < 80: return "/static/img/congestion/やや混雑.png"
+        return "/static/img/congestion/混雑.png"
+
+    def _icon_sat(s: int) -> str:
+        """満足度1-5 → アイコン"""
+        if s == 1: return "/static/img/satisfaction/angry.png"
+        if s == 2: return "/static/img/satisfaction/upset.png"
+        if s == 3: return "/static/img/satisfaction/Neutral.png"
+        if s == 4: return "/static/img/satisfaction/Satisfied.png"
+        return "/static/img/satisfaction/VerySatisfied.png"
+
+    MODE_EN = {
+        "walking": "Walking", "walk": "Walking",
+        "rental bicycle": "Rental Bicycle", "bike": "Bicycle",
+        "city bus": "City Bus", "bus": "Bus",
+        "taxi": "Taxi", "car": "Car",
+        "stay": "Stay", "move": "Move"
+    }
+    
+    TRANSPORT_NORMALIZE = {
+        "walking": "Walking",
+        "walk": "Walking",
+        "rental bicycle": "Rental Bicycle",
+        "bike": "Rental Bicycle",
+        "city bus": "City Bus",
+        "bus": "City Bus",
+        "taxi": "Taxi",
+        "car": "Taxi",
+    }
+
+    def _apply_scores(plan: list, user_type: str):
+        """各スロットに満足度・混雑度を付与"""
+        total_satisfaction = 0
+        
+        for p in plan:
+            slot = p["slot"]
+            
+            # start/returnはスキップ
+            if slot in ["start", "return"]:
+                p["time_display"] = "Depart" if slot == "start" else "Return"
+                p["congestion"] = None
+                p["satisfaction"] = None
+                p["congestion_img"] = None
+                p["satisfaction_img"] = None
+                p["mode_jp"] = p["poi_name"]
+                continue
+            
+            # 時刻表示用
+            match = re.search(r"\d+", slot)
+            if match:
+                slot_num = int(match.group())
+                hour = 8 + slot_num
+                p["time_display"] = f"{hour:02d}\n00"
+            else:
+                p["time_display"] = ""
+            
+            # 混雑度計算
+            congestion = _congestion_base(slot)
+            penalty = (congestion - 50) / 100 * 3
+            
+            # POIスロット
+            if p["poi_name"].lower() not in ["move", "移動"]:
+                if p["poi_id"] and p["poi_id"] in poi_prefs.get(user_type, {}):
+                    base_sat = poi_prefs[user_type][p["poi_id"]]
+                    poi_sat = max(0, base_sat - penalty)
+                    satisfaction_level = _icon_sat_from_10(poi_sat)
+                    
+                    p["congestion"] = congestion
+                    p["satisfaction"] = poi_sat
+                    p["satisfaction_level"] = satisfaction_level
+                    p["congestion_img"] = _icon_cong(congestion)
+                    p["satisfaction_img"] = _icon_sat(satisfaction_level)
+                    p["mode_jp"] = p["poi_name"]
+                    
+                    total_satisfaction += poi_sat
+                else:
+                    p["congestion"] = congestion
+                    p["satisfaction"] = 3.0
+                    p["satisfaction_level"] = 3
+                    p["congestion_img"] = _icon_cong(congestion)
+                    p["satisfaction_img"] = _icon_sat(3)
+                    p["mode_jp"] = p["poi_name"]
+            
+            # 移動スロット
+            else:
+                transport = p["mode"].lower()
+                transport_normalized = TRANSPORT_NORMALIZE.get(transport, "Walking")
+                
+                if transport_normalized in transport_prefs.get(user_type, {}):
+                    base_sat = transport_prefs[user_type][transport_normalized]
+                    transport_sat = max(0, base_sat - penalty)
+                    satisfaction_level = _icon_sat_from_10(transport_sat)
+                    
+                    p["congestion"] = congestion
+                    p["satisfaction"] = transport_sat
+                    p["satisfaction_level"] = satisfaction_level
+                    p["congestion_img"] = _icon_cong(congestion)
+                    p["satisfaction_img"] = _icon_sat(satisfaction_level)
+                    p["mode_jp"] = MODE_EN.get(transport, transport)
+                    
+                    total_satisfaction += transport_sat
+                else:
+                    p["congestion"] = congestion
+                    p["satisfaction"] = 5.0
+                    p["satisfaction_level"] = 3
+                    p["congestion_img"] = _icon_cong(congestion)
+                    p["satisfaction_img"] = _icon_sat(3)
+                    p["mode_jp"] = MODE_EN.get(transport, transport)
+        
+        return total_satisfaction
+
+    desired_total = _apply_scores(desired, user_type)
+    proposal_total = _apply_scores(proposal, user_type)
+
+    return jsonify({
+        "desired": desired,
+        "proposal": proposal,
+        "desired_total_satisfaction": round(desired_total, 1),
+        "proposal_total_satisfaction": round(proposal_total, 1),
+        "user": user,
+        "user_type": user_type,
+        "persuasive_text": persuasive_text
+    })
 def export_satisfaction_congestion_data(output_filename='data/satisfaction_congestion_example.csv'):
     """
     各ユーザーの希望案と提案案の満足度・混雑度データをCSVに出力（起動時に1回のみ）
