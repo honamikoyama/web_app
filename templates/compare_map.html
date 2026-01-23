@@ -18,12 +18,12 @@
     main{
       display:grid; 
       grid-template-columns:1fr 1fr; 
-      grid-template-rows:auto auto auto 1fr auto auto;
-      gap:8px; 
+      grid-template-rows:auto auto 1fr auto auto;
+      gap:2px; 
       padding:16px 16px 0 16px;
       height:calc(100vh - 62px);
     }
-    .col{display:grid; grid-template-rows:auto auto 1fr auto; gap:8px; min-height:0}
+    .col{display:grid; grid-template-rows:auto auto auto 1fr; gap:8px; min-height:0}
     .title{margin:0; font-size:15px; font-weight:700; text-align:center}
     .total-satisfaction{
       background:#f0f9ff;
@@ -80,9 +80,9 @@
     }
     .legend-container{
       grid-column:1 / -1;
-      padding-bottom:16px;
+      padding-top:0;
+      padding-bottom:4px;
     }
-
     .legend-toggle:hover{
       background:#f3f4f6;
     }
@@ -259,44 +259,18 @@
 </head>
 <body>
   <header>
-    <strong>希望ルート vs 提案ルート</strong>
+    <strong>希望ルート vs 提案ルート（条件B）</strong>
     <select id="userSelector" class="user-selector">
       <option value="User_1">User 1（大幅変更）</option>
       <option value="User_2">User 2（中程度変更）</option>
       <option value="User_3">User 3（小変更）</option>
     </select>
     <span style="font-size:12px;color:#6b7280" id="userTypeDisplay"></span>
-    <a href="/">← 既存の地図UIへ</a>
+    <!-- 修正後 -->
+    <a href="/ui/condition-a">条件Aへ →</a>
   </header>
 
   <main>
-    <section class="col">
-      <h2 class="title">希望</h2>
-      <div class="total-satisfaction">
-        <span class="label">総満足度：</span><span id="desiredTotal">-</span>
-      </div>
-      <div class="split">
-        <div class="map"><div id="mapL"></div></div>
-        <div class="timeline" id="tlL"></div>
-      </div>
-    </section>
-
-    <section class="col">
-      <h2 class="title">提案</h2>
-      <div class="total-satisfaction">
-        <span class="label">総満足度：</span><span id="proposalTotal">-</span><span class="diff" id="totalDiff"></span>
-      </div>
-      <div class="split">
-        <div class="map"><div id="mapR"></div></div>
-        <div class="timeline" id="tlR"></div>
-      </div>
-    </section>
-
-    <!-- 説得文（全幅） -->
-    <div class="persuasive-text" id="persuasiveText" style="display:none;">
-      <div class="persuasive-text-content" id="persuasiveTextContent"></div>
-    </div>
-
     <!-- 凡例（全幅、アコーディオン） -->
     <div class="legend-container">
         <div class="legend-content" id="legendContent">
@@ -337,6 +311,36 @@
           </div>
         </div>
       </div>
+    <section class="col">
+      <h2 class="title">希望</h2>
+      <div class="total-satisfaction">
+        <span class="label">総満足度：</span><span id="desiredTotal">-</span>
+      </div>
+
+
+      <div class="split">
+        <div class="map"><div id="mapL"></div></div>
+        <div class="timeline" id="tlL"></div>
+      </div>
+    </section>
+
+    <section class="col">
+      <h2 class="title">提案</h2>
+      <div class="total-satisfaction">
+        <span class="label">総満足度：</span><span id="proposalTotal">-</span><span class="diff" id="totalDiff"></span>
+      </div>
+      <div class="split">
+        <div class="map"><div id="mapR"></div></div>
+        <div class="timeline" id="tlR"></div>
+      </div>
+    </section>
+
+    <!-- 説得文（全幅） -->
+    <div class="persuasive-text" id="persuasiveText" style="display:none;">
+      <div class="persuasive-text-content" id="persuasiveTextContent"></div>
+    </div>
+
+
   </main>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -603,7 +607,7 @@
         addedMarkers.set(p.poi_name, true);
       });
 
-      let lastPOI=null, carryMode=null;
+let lastPOI=null, carryMode=null;
       // 出発地から最初のPOIへのルート
       if (startPoint && startPoint.lat && startPoint.lng) {
         const firstPOI = plan.find(p => p.lat && p.lng && p.slot !== 'start' && p.slot !== 'return');
@@ -680,7 +684,8 @@
       
       const mapL=makeMap('mapL');
       const mapR=makeMap('mapR');
-      await drawPlan(mapL, document.getElementById('tlL'), data.desired);
+
+await drawPlan(mapL, document.getElementById('tlL'), data.desired);
       await drawPlan(mapR, document.getElementById('tlR'), data.proposal, data.desired);
     }
 

@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>希望ルート vs 提案ルート（シンプル版）</title>
+  <title>希望ルート vs 提案ルート（条件A）</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
   <style>
@@ -98,14 +98,14 @@
 </head>
 <body>
   <header>
-    <strong>希望ルート vs 提案ルート（シンプル版）</strong>
+    <strong>希望ルート vs 提案ルート（条件A）</strong>
     <select id="userSelector" class="user-selector">
       <option value="User_1">User 1（大幅変更）</option>
       <option value="User_2">User 2（中程度変更）</option>
       <option value="User_3">User 3（小変更）</option>
     </select>
     <span style="font-size:12px;color:#6b7280" id="userTypeDisplay"></span>
-    <a href="/ui/compare-map">← 詳細版へ</a>
+    <a href="/ui/condition-b">← 条件Bへ</a>
   </header>
 
   <main>
@@ -215,7 +215,7 @@
         listEl.appendChild(row(p, num));
       });
 
-      // ピンを表示
+// ピンを表示
       const addedMarkers = new Map();
       plan.forEach(p=>{
         if(!p.lat||!p.lng) return;
@@ -259,6 +259,31 @@
 
       // ルート描画
       let lastPOI=null, carryMode=null;
+      
+      // 出発地と帰着地を取得
+      const startPoint = plan.find(p => p.slot === 'start');
+      const returnPoint = plan.find(p => p.slot === 'return');
+      
+      // 出発地から最初のPOIへのルート
+      if (startPoint && startPoint.lat && startPoint.lng) {
+        const firstPOI = plan.find(p => p.lat && p.lng && p.slot !== 'start' && p.slot !== 'return');
+        if (firstPOI) {
+          const firstMoveItem = plan.find(p => 
+            plan.indexOf(p) > plan.indexOf(startPoint) && 
+            plan.indexOf(p) < plan.indexOf(firstPOI) && 
+            p.mode
+          );
+          const mode = firstMoveItem ? firstMoveItem.mode : 'walk';
+          const st = modeToStyle(mode);
+          const line = await routeLine(st.profile, startPoint, firstPOI);
+          L.polyline(line, {
+            color: st.color, weight: 4, opacity: 0.98,
+            dashArray: (line.length===2 && st.profile) ? "6,6" : null
+          }).addTo(map);
+        }
+      }
+      
+      // POI間のルート
       for(const cur of plan){
         if(cur.slot === 'start' || cur.slot === 'return') continue;
         const hasCoord=!!(cur.lat&&cur.lng);
@@ -275,6 +300,125 @@
 
         lastPOI=cur; carryMode=null;
       }
+      
+      // 最後のPOIから帰着地へのルート
+      if (returnPoint && returnPoint.lat && returnPoint.lng && lastPOI) {
+        const lastMoveItem = plan.slice().reverse().find(p => 
+          plan.indexOf(p) > plan.indexOf(lastPOI) && 
+          plan.indexOf(p) < plan.indexOf(returnPoint) && 
+          p.mode
+        );
+        const mode = lastMoveItem ? lastMoveItem.mode : 'walk';
+        const st = modeToStyle(mode);
+        const line = await routeLine(st.profile, lastPOI, returnPoint);
+        L.polyline(line, {
+          color: st.color, weight: 4, opacity: 0.98,
+          dashArray: (line.length===2 && st.profile) ? "6,6" : null
+        }).addTo(map);
+      }
+
+      // 出発地と帰着地が同じ場所かチェック
+      const isSameLocation = startPoint?.lat === returnPoint?.lat && 
+                            startPoint?.lng === returnPoint?.lng;
+
+      if (isSameLocation && startPoint && startPoint.lat && startPoint.lng) {
+        // 同じ場所の場合、S/Gマーカーを1つに
+        const color = categoryColor(startPoint.category);
+        const markerHtml = `
+          <div style="
+            background:${color}; 
+            color:white; 
+            width:36px; 
+            height:36px; 
+            border-radius:50%; 
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            font-weight:800; 
+            font-size:14px;
+            border:3px solid white;
+            box-shadow:0 2px 6px rgba(0,0,0,0.4);
+          ">S/G</div>
+        `;
+        
+        const icon = L.divIcon({
+          html: markerHtml,
+          className: 'custom-marker',
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
+        });
+        
+        L.marker([startPoint.lat, startPoint.lng], {icon: icon, zIndexOffset: 1000})
+          .addTo(map)
+          .bindPopup(`<b>出発地/帰着地 (S/G)</b><br>${startPoint.poi_name || ''}<br><small>${startPoint.category || ''}</small>`);
+        bounds.push([startPoint.lat, startPoint.lng]);
+      } else {
+        // 別々の場所の場合、S と G を別々に表示
+        if (startPoint && startPoint.lat && startPoint.lng) {
+          const startColor = categoryColor(startPoint.category);
+          const startMarkerHtml = `
+            <div style="
+              background:${startColor}; 
+              color:white; 
+              width:36px; 
+              height:36px; 
+              border-radius:50%; 
+              display:flex; 
+              align-items:center; 
+              justify-content:center; 
+              font-weight:800; 
+              font-size:16px;
+              border:3px solid white;
+              box-shadow:0 2px 6px rgba(0,0,0,0.4);
+            ">S</div>
+          `;
+          
+          const startIcon = L.divIcon({
+            html: startMarkerHtml,
+            className: 'custom-marker',
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
+          });
+          
+          L.marker([startPoint.lat, startPoint.lng], {icon: startIcon, zIndexOffset: 1000})
+            .addTo(map)
+            .bindPopup(`<b>出発地 (S)</b><br>${startPoint.poi_name || ''}<br><small>${startPoint.category || ''}</small>`);
+          bounds.push([startPoint.lat, startPoint.lng]);
+        }
+
+        if (returnPoint && returnPoint.lat && returnPoint.lng) {
+          const returnColor = categoryColor(returnPoint.category);
+          const returnMarkerHtml = `
+            <div style="
+              background:${returnColor}; 
+              color:white; 
+              width:36px; 
+              height:36px; 
+              border-radius:50%; 
+              display:flex; 
+              align-items:center; 
+              justify-content:center; 
+              font-weight:800; 
+              font-size:16px;
+              border:3px solid white;
+              box-shadow:0 2px 6px rgba(0,0,0,0.4);
+            ">G</div>
+          `;
+          
+          const returnIcon = L.divIcon({
+            html: returnMarkerHtml,
+            className: 'custom-marker',
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
+          });
+          
+          L.marker([returnPoint.lat, returnPoint.lng], {icon: returnIcon, zIndexOffset: 1000})
+            .addTo(map)
+            .bindPopup(`<b>帰着地 (G)</b><br>${returnPoint.poi_name || ''}<br><small>${returnPoint.category || ''}</small>`);
+          bounds.push([returnPoint.lat, returnPoint.lng]);
+        }
+      }
+      
       if(bounds.length) map.fitBounds(bounds,{padding:[18,18]});
     }
 

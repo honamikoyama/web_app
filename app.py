@@ -224,12 +224,12 @@ def _read_plan_csv(path: Path, poi_master: dict, name_map: dict, user_filter=Non
     return out
 
 
-@app.route("/ui/compare-map")
-def ui_compare_map():
+@app.route("/ui/condition-b")
+def ui_condition_a():
     return render_template("compare_map.html")
 
-@app.route("/ui/compare-map-simple")
-def ui_compare_map_simple():
+@app.route("/ui/condition-a")
+def ui_condition_b():
     return render_template("compare_map_simple.html")
 
 @app.route("/ui/compare-map-en")
@@ -754,8 +754,7 @@ def _calculate_route_congestion(plan):
 
 
 if __name__ == "__main__":
-    print("🚀 Generating satisfaction & congestion data...")
+    print("Generating satisfaction & congestion data...")
     export_satisfaction_congestion_data()
-    
-    print("🌐 Starting Flask server...")
-    app.run(debug=True)
+    print("Starting Flask server...")
+    app.run(host='0.0.0.0', port=5001, debug=True)
